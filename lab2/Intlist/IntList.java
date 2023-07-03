@@ -95,6 +95,9 @@ public class IntList {
             }
             return A;
         }
+        if (ptr == null) {
+            return B;
+        }
         ptr.rest = B;
         return A;
 
