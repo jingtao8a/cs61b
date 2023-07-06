@@ -1,5 +1,7 @@
 package synthesizer;
 
+import java.util.Iterator;
+
 public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     private Object[] buffer;
     private int first;
@@ -11,6 +13,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         first = last = 0;
         buffer = new Object[n + 1];
     }
+    @Override
     public void enqueue(T x) {
         if (isFull()) {
             return;
@@ -19,7 +22,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         buffer[last] = x;
         fillcount++;
     }
-
+    @Override
     public T dequeue() {
         if (isEmpty()) {
             return null;
@@ -28,7 +31,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         fillcount--;
         return (T)buffer[first];
     }
-
+    @Override
     public T peek() {
         if (isEmpty()) {
             return null;
@@ -37,4 +40,28 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         return (T)buffer[pos];
     }
 
+    @Override
+    public Iterator<T> iterator() {
+        return new ArrayRingBufferIterator();
+    }
+
+    private class ArrayRingBufferIterator implements  Iterator<T> {
+        private int pos;
+        private int curnum;
+
+        public ArrayRingBufferIterator() {
+            pos = (ArrayRingBuffer.this.first + 1) % ArrayRingBuffer.this.buffer.length;
+            curnum = 0;
+        }
+        public boolean hasNext() {
+            return curnum < ArrayRingBuffer.this.fillcount;
+        }
+
+        public T next() {
+            T res = (T)ArrayRingBuffer.this.buffer[pos];
+            pos = (pos + 1) % ArrayRingBuffer.this.buffer.length;
+            curnum++;
+            return res;
+        }
+    }
 }
