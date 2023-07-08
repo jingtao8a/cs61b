@@ -2,8 +2,12 @@ package lab9tester;
 
 import static org.junit.Assert.*;
 
+import edu.princeton.cs.algs4.In;
 import org.junit.Test;
 import lab9.BSTMap;
+
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Tests by Brendan Hu, Spring 2015, revised for 2018 by Josh Hug
@@ -75,6 +79,11 @@ public class TestBSTMap {
             b.put("hi" + i, 1);
         }
         assertEquals(456, b.size());
+        b.remove("hi", 1);
+        for (int i = 0; i < 455; ++i) {
+            b.remove("hi" + i);
+        }
+        assertEquals(0, b.size());
     }
 
     //assumes get/containskey work
@@ -84,6 +93,32 @@ public class TestBSTMap {
         b.put("hi", 1);
         assertTrue(b.containsKey("hi"));
         assertTrue(b.get("hi") != null);
+    }
+
+    @Test
+    public void sanityKeySetTest() {
+        BSTMap<String, Integer> b = new BSTMap<>();
+        for (int i = 0; i < 455; ++i) {
+            b.put("hi" + i, i);
+        }
+        Set<String> set = b.keySet();
+        Iterator<String> iter = set.iterator();
+        while (iter.hasNext()) {
+            assertTrue(b.containsKey(iter.next()));
+        }
+    }
+    @Test
+    public void sanityIteratorTest() {
+        BSTMap<Integer, Integer> b = new BSTMap<>();
+        for (int i = 0; i < 455; ++i) {
+            b.put(i, i);
+        }
+        Iterator<Integer> iter = b.iterator();
+        int i = 0;
+        while (iter.hasNext()) {
+            assertEquals(i, (long)iter.next());
+            ++i;
+        }
     }
 
     public static void main(String[] args) {
